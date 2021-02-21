@@ -1,5 +1,6 @@
 import pygame
 from rocket import Rocket
+from grenade import Grenade
 import math
 
 pygame.init()
@@ -14,6 +15,7 @@ class Player(pygame.sprite.Sprite):
         self.max_health = 100
         self.velocity = 3
         self.all_rockets = pygame.sprite.Group()
+        self.all_grenades = pygame.sprite.Group()
         self.direction = True
         self.image = pygame.image.load(image_path)
         self.rect = self.image.get_rect()
@@ -31,13 +33,26 @@ class Player(pygame.sprite.Sprite):
     def rocket_launch(self, time_before_launch, mouse_pos, wind_force):
         if time_before_launch > 2000:
             time_before_launch = 2000
-        rocker_launchForce = time_before_launch / 2000
+        rocker_launch_force = time_before_launch / 2000
         projectile_start_position = pygame.math.Vector2(self.rect.x + (self.rect.width / 2),
                                                         self.rect.y + (self.rect.height / 2))
         angle = math.atan2(mouse_pos[0] - projectile_start_position[0],
-                           projectile_start_position[1] - mouse_pos[1])
-        self.all_rockets.add(Rocket(self, rocker_launchForce, projectile_start_position, angle, wind_force,
+                           mouse_pos[1] - projectile_start_position[1])
+
+        self.all_rockets.add(Rocket(self, rocker_launch_force, projectile_start_position, angle, wind_force,
                                     mouse_pos, self.direction))
+
+    def grenade_launch(self, time_before_launch, mouse_pos):
+        if time_before_launch > 2000:
+            time_before_launch = 2000
+        grenade_launch_force = time_before_launch / 2000
+        projectile_start_position = pygame.math.Vector2(self.rect.x + (self.rect.width / 2),
+                                                        self.rect.y + (self.rect.height / 2))
+        angle = math.atan2(mouse_pos[0] - projectile_start_position[0],
+                           mouse_pos[1] - projectile_start_position[1])
+
+        self.all_grenades.add(Grenade(self, grenade_launch_force, projectile_start_position, angle,
+                                      mouse_pos, self.direction))
 
     def move_right(self):
         self.rect.x += self.velocity

@@ -20,6 +20,7 @@ running = True
 player_turn = 1
 time_at_player_turn = 0
 rocket_time_pressed = 0
+grenade_time_pressed = 0
 
 # game loop
 while running:
@@ -46,7 +47,7 @@ while running:
     screen.blit(game.player1.image, game.player1.rect)
     screen.blit(game.player2.image, game.player2.rect)
 
-    # update and draw rockets
+    # update and draw rockets and grenades
     for projectile in game.player1.all_rockets:
         projectile.move(screen)
 
@@ -56,6 +57,16 @@ while running:
         projectile.move(screen)
 
     game.player2.all_rockets.draw(screen)
+
+    for projectile in game.player1.all_grenades:
+        projectile.move(screen)
+
+    game.player1.all_grenades.draw(screen)
+
+    for projectile in game.player2.all_grenades:
+        projectile.move(screen)
+
+    game.player2.all_grenades.draw(screen)
 
     # draw and update health bars
     game.player1.update_health_bar(screen)
@@ -86,8 +97,12 @@ while running:
         elif event.type == pygame.KEYDOWN:
             game.pressed[event.key] = True
 
+            # rocket launcher input
             if event.key == pygame.K_a:
                 rocket_time_pressed = pygame.time.get_ticks()
+
+            if event.key == pygame.K_e:
+                grenade_time_pressed = pygame.time.get_ticks()
 
         elif event.type == pygame.KEYUP:
             game.pressed[event.key] = False
@@ -103,3 +118,15 @@ while running:
                     player_turn = 1
                 time_at_player_turn = delta_time
                 rocket_time_pressed = 0
+
+            if event.key == pygame.K_e and grenade_time_pressed != 0:
+                if player_turn == 1:
+                    game.player1.grenade_launch(pygame.time.get_ticks() - grenade_time_pressed,
+                                                pygame.mouse.get_pos())
+                    player_turn = 2
+                else:
+                    game.player2.grenade_launch(pygame.time.get_ticks() - grenade_time_pressed,
+                                                pygame.mouse.get_pos())
+                    player_turn = 1
+                time_at_player_turn = delta_time
+                grenade_time_pressed = 0

@@ -12,7 +12,7 @@ class Game:
         self.pressed = {}
         self.turn_timer = 30000
 
-    def check_collisionWithRocket(self, sprite, group):
+    def check_collisionWithProjectiles(self, sprite, group):
         return pygame.sprite.spritecollide(sprite, group, False, pygame.sprite.collide_mask)
 
     def check_collision(self, player1, player2):

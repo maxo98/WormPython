@@ -1,6 +1,6 @@
 import math
 
-gravity = -9.81
+gravity = 9.81
 
 
 # get the path of the projectile without wind
